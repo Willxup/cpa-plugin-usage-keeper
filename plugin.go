@@ -17,13 +17,14 @@ import (
 )
 
 const (
-	pluginName       = "Keeper"
-	pluginMenu       = "Keeper"
-	pluginAuthor     = "Willxup"
-	pluginRepository = "https://github.com/Willxup/cpa-plugin-usage-keeper"
-	resourcePath     = "/open"
-	configKeeperURL  = "keeper_url"
-	shellPageTitle   = "CPA Usage Keeper"
+	pluginName           = "Keeper"
+	pluginMenu           = "Keeper"
+	pluginAuthor         = "Willxup"
+	pluginRepository     = "https://github.com/Willxup/cpa-plugin-usage-keeper"
+	resourcePath         = "/open"
+	configKeeperURL      = "keeper_url"
+	shellPageTitle       = "CPA Usage Keeper"
+	minimumKeeperVersion = "v1.12.2"
 )
 
 var (
@@ -97,7 +98,7 @@ func handleMethod(method string, request []byte) ([]byte, error) {
 		return okEnvelope(managementRegistrationResponse{Resources: []resourceRoute{{
 			Path:        resourcePath,
 			Menu:        pluginMenu,
-			Description: "Open cpa-usage-keeper inside CPAMC.",
+			Description: "Open cpa-usage-keeper inside CPAMC. Requires cpa-usage-keeper " + minimumKeeperVersion + " or later.",
 		}}})
 	case pluginabi.MethodManagementHandle:
 		return okEnvelope(currentManagementResponse())
@@ -115,7 +116,7 @@ func pluginMetadata() pluginapi.Metadata {
 		ConfigFields: []pluginapi.ConfigField{{
 			Name:        configKeeperURL,
 			Type:        pluginapi.ConfigFieldTypeString,
-			Description: "Full cpa-usage-keeper application root URL, for example https://cpa.example.com/keeper/.",
+			Description: "Full cpa-usage-keeper application root URL. Requires cpa-usage-keeper " + minimumKeeperVersion + " or later.",
 		}},
 	}
 }
@@ -246,7 +247,7 @@ func keeperShellHTML(embedURL string) string {
 		"  <title>" + shellPageTitle + "</title>\n" +
 		"  <style>html,body{margin:0;width:100%;height:100%;font:14px system-ui,-apple-system,BlinkMacSystemFont,\"Segoe UI\",sans-serif;background:#f8fafc;color:#111827}.shell{position:fixed;inset:0;overflow:hidden}.keeper-frame{display:block;width:100%;height:100%;border:0;background:#fff}.status,.fallback{position:absolute;inset:0;display:grid;place-items:center;background:#f8fafc}.status-panel,.fallback-panel{max-width:560px;padding:28px;line-height:1.6;text-align:center}.fallback{display:none}.fallback h1{margin:0 0 12px;font-size:22px}.code{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;background:#e5e7eb;border-radius:6px;padding:2px 6px}.actions{display:flex;gap:12px;justify-content:center;margin-top:18px}.actions button{border:1px solid #cbd5e1;border-radius:8px;background:#fff;color:#111827;cursor:pointer;padding:8px 14px}.actions button.primary{border-color:#2563eb;background:#2563eb;color:#fff}html[data-ready=\"true\"] .status{display:none}html[data-failed=\"true\"] .status{display:none}html[data-failed=\"true\"] .fallback{display:grid}</style>\n" +
 		"</head>\n" +
-		"<body><main class=\"shell\"><iframe id=\"keeperFrame\" class=\"keeper-frame\" title=\"CPA Usage Keeper\" src=\"" + escapedURL + "\"></iframe><section id=\"keeperStatus\" class=\"status\" aria-live=\"polite\"><div class=\"status-panel\">Connecting to CPA Usage Keeper...</div></section><section id=\"keeperFallback\" class=\"fallback\" aria-live=\"assertive\"><div class=\"fallback-panel\"><h1>CPA Usage Keeper is not available</h1><p>Please check the CPA plugin configuration. Set <span class=\"code\">keeper_url</span> to the Keeper application root URL, and make sure Keeper is running and reachable from this browser.</p><p>If Keeper is served under a base path, include that base path in the configured URL.</p><div class=\"actions\"><button id=\"retryKeeper\" class=\"primary\" type=\"button\">Retry</button><button id=\"openKeeper\" type=\"button\">Open Keeper</button></div></div></section></main><script>(function(){const keeperURL = " + string(jsURL) + ";const readyType=\"cpa-usage-keeper:ready\";const frame=document.getElementById(\"keeperFrame\");const retryButton=document.getElementById(\"retryKeeper\");const openButton=document.getElementById(\"openKeeper\");let timer=0;const expectedOrigin=(function(){try{return new URL(keeperURL).origin;}catch{return \"\";}})();function markConnecting(){document.documentElement.removeAttribute(\"data-ready\");document.documentElement.removeAttribute(\"data-failed\");}function markReady(){window.clearTimeout(timer);document.documentElement.removeAttribute(\"data-failed\");document.documentElement.setAttribute(\"data-ready\",\"true\");}function markFailed(){document.documentElement.removeAttribute(\"data-ready\");document.documentElement.setAttribute(\"data-failed\",\"true\");}function startTimer(){window.clearTimeout(timer);timer=window.setTimeout(markFailed,8000);}window.addEventListener(\"message\",function(event){if(!frame||event.source!==frame.contentWindow)return;if(expectedOrigin&&event.origin!==expectedOrigin)return;const data=event.data||{};if(data.type===readyType)markReady();});retryButton.addEventListener(\"click\",function(){markConnecting();frame.src=keeperURL;startTimer();});openButton.addEventListener(\"click\",function(){window.open(keeperURL,\"_blank\",\"noopener\");});startTimer();})();</script></body>\n" +
+		"<body><main class=\"shell\"><iframe id=\"keeperFrame\" class=\"keeper-frame\" title=\"CPA Usage Keeper\" src=\"" + escapedURL + "\"></iframe><section id=\"keeperStatus\" class=\"status\" aria-live=\"polite\"><div class=\"status-panel\">Connecting to CPA Usage Keeper...</div></section><section id=\"keeperFallback\" class=\"fallback\" aria-live=\"assertive\"><div class=\"fallback-panel\"><h1>CPA Usage Keeper is not available</h1><p>Please check the CPA plugin configuration. Set <span class=\"code\">keeper_url</span> to the Keeper application root URL, and make sure Keeper is running and reachable from this browser.</p><p>This plugin requires cpa-usage-keeper " + minimumKeeperVersion + " or later. If Keeper is served under a base path, include that base path in the configured URL.</p><div class=\"actions\"><button id=\"retryKeeper\" class=\"primary\" type=\"button\">Retry</button><button id=\"openKeeper\" type=\"button\">Open Keeper</button></div></div></section></main><script>(function(){const keeperURL = " + string(jsURL) + ";const readyType=\"cpa-usage-keeper:ready\";const frame=document.getElementById(\"keeperFrame\");const retryButton=document.getElementById(\"retryKeeper\");const openButton=document.getElementById(\"openKeeper\");let timer=0;const expectedOrigin=(function(){try{return new URL(keeperURL).origin;}catch{return \"\";}})();function markConnecting(){document.documentElement.removeAttribute(\"data-ready\");document.documentElement.removeAttribute(\"data-failed\");}function markReady(){window.clearTimeout(timer);document.documentElement.removeAttribute(\"data-failed\");document.documentElement.setAttribute(\"data-ready\",\"true\");}function markFailed(){document.documentElement.removeAttribute(\"data-ready\");document.documentElement.setAttribute(\"data-failed\",\"true\");}function startTimer(){window.clearTimeout(timer);timer=window.setTimeout(markFailed,8000);}window.addEventListener(\"message\",function(event){if(!frame||event.source!==frame.contentWindow)return;if(expectedOrigin&&event.origin!==expectedOrigin)return;const data=event.data||{};if(data.type===readyType)markReady();});retryButton.addEventListener(\"click\",function(){markConnecting();frame.src=keeperURL;startTimer();});openButton.addEventListener(\"click\",function(){window.open(keeperURL,\"_blank\",\"noopener\");});startTimer();})();</script></body>\n" +
 		"</html>\n"
 }
 
@@ -262,7 +263,7 @@ func configFallbackHTML(message string) string {
 		"  <title>CPA Usage Keeper</title>\n" +
 		"  <style>body{margin:0;font:14px system-ui,-apple-system,BlinkMacSystemFont,\"Segoe UI\",sans-serif;background:#f8fafc;color:#111827;display:grid;min-height:100vh;place-items:center}.panel{max-width:560px;padding:24px;line-height:1.6}.label{font-weight:700}.code{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;background:#e5e7eb;border-radius:6px;padding:2px 6px}</style>\n" +
 		"</head>\n" +
-		"<body><main class=\"panel\"><h1>CPA Usage Keeper</h1><p class=\"label\">Plugin configuration is incomplete.</p><p>" + html.EscapeString(message) + "</p><p>Set <span class=\"code\">keeper_url</span> to the full Keeper application root URL.</p></main></body>\n" +
+		"<body><main class=\"panel\"><h1>CPA Usage Keeper</h1><p class=\"label\">Plugin configuration is incomplete.</p><p>" + html.EscapeString(message) + "</p><p>Set <span class=\"code\">keeper_url</span> to the full Keeper application root URL.</p><p>This plugin requires cpa-usage-keeper " + minimumKeeperVersion + " or later.</p></main></body>\n" +
 		"</html>\n"
 }
 

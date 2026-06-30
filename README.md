@@ -3,9 +3,11 @@
 CPA plugin that adds a `Keeper` resource entry to CPAMC and opens
 `cpa-usage-keeper` inside the management-center plugin iframe.
 
+This plugin requires `cpa-usage-keeper` v1.12.2 or later.
+
 The plugin does not proxy Keeper APIs and does not create Keeper sessions. It
-only registers a browser resource route and redirects that route to the
-configured Keeper application URL with `embed=cpamc`.
+only registers a browser resource route and embeds the configured Keeper
+application URL with `embed=cpamc`.
 
 ## Configuration
 
@@ -23,6 +25,8 @@ plugins:
 
 `keeper_url` must be a full `http://` or `https://` application root URL. It
 must not include query parameters or fragments.
+
+The configured Keeper instance must run `cpa-usage-keeper` v1.12.2 or later.
 
 Examples:
 
@@ -49,7 +53,7 @@ GET /v0/resource/plugins/keeper/open
 ```
 
 CPAMC renders plugin resources in an iframe. This resource page immediately
-navigates the current iframe to:
+loads Keeper in an inner iframe with:
 
 ```text
 <keeper_url>?embed=cpamc
@@ -57,6 +61,10 @@ navigates the current iframe to:
 
 If the plugin is missing `keeper_url`, or the value is invalid, the resource
 page renders a small configuration message instead.
+
+If Keeper cannot be reached, is served from the wrong base path, or runs an
+older version that does not support CPAMC embed readiness, the resource page
+shows a small troubleshooting message instead of exposing a browser error page.
 
 ## Cookie Boundary
 

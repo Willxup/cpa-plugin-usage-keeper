@@ -86,8 +86,9 @@ func TestRegisterResultDeclaresManagementAPIAndKeeperURLField(t *testing.T) {
 			Name         string `json:"Name"`
 			Version      string `json:"Version"`
 			ConfigFields []struct {
-				Name string `json:"Name"`
-				Type string `json:"Type"`
+				Name        string `json:"Name"`
+				Type        string `json:"Type"`
+				Description string `json:"Description"`
 			} `json:"ConfigFields"`
 		} `json:"metadata"`
 		Capabilities struct {
@@ -108,6 +109,9 @@ func TestRegisterResultDeclaresManagementAPIAndKeeperURLField(t *testing.T) {
 	}
 	if len(result.Metadata.ConfigFields) != 1 || result.Metadata.ConfigFields[0].Name != "keeper_url" || result.Metadata.ConfigFields[0].Type != "string" {
 		t.Fatalf("config fields = %#v, want one keeper_url string field", result.Metadata.ConfigFields)
+	}
+	if !strings.Contains(result.Metadata.ConfigFields[0].Description, minimumKeeperVersion) {
+		t.Fatalf("config field description = %q, want minimum Keeper version", result.Metadata.ConfigFields[0].Description)
 	}
 }
 
@@ -142,6 +146,9 @@ func TestManagementRegisterReturnsSingleKeeperResource(t *testing.T) {
 	if got := result.Resources[0].Menu; got != pluginMenu {
 		t.Fatalf("resource menu = %q, want %q", got, pluginMenu)
 	}
+	if !strings.Contains(result.Resources[0].Description, minimumKeeperVersion) {
+		t.Fatalf("resource description = %q, want minimum Keeper version", result.Resources[0].Description)
+	}
 }
 
 func TestManagementHandleRendersKeeperShell(t *testing.T) {
@@ -162,6 +169,7 @@ func TestManagementHandleRendersKeeperShell(t *testing.T) {
 		`src="https://keeper.example.com/?embed=cpamc"`,
 		`cpa-usage-keeper:ready`,
 		`CPA Usage Keeper is not available`,
+		minimumKeeperVersion,
 		`Open Keeper`,
 	} {
 		if !strings.Contains(body, want) {
@@ -224,6 +232,9 @@ func TestManagementHandleShowsConfigFallbackForMissingKeeperURL(t *testing.T) {
 	}
 	if !strings.Contains(body, "keeper_url") || !strings.Contains(body, "CPA Usage Keeper") {
 		t.Fatalf("fallback body does not explain keeper_url:\n%s", body)
+	}
+	if !strings.Contains(body, minimumKeeperVersion) {
+		t.Fatalf("fallback body does not mention minimum Keeper version:\n%s", body)
 	}
 }
 
