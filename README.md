@@ -145,3 +145,7 @@ make checksums VERSION=0.1.0
 
 After publishing the release, update
 `router-for-me/CLIProxyAPI-Plugins-Store` with this plugin's registry entry.
+
+## License
+
+This project is open source under the [MIT License](./LICENSE).
