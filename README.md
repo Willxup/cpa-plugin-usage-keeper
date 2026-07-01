@@ -1,13 +1,25 @@
 # CPA Usage Keeper Plugin
 
-CPA plugin that adds a `Keeper` resource entry to CPAMC and opens
-`cpa-usage-keeper` inside the management-center plugin iframe.
+CPA plugin for [CLIProxyAPI](https://github.com/router-for-me/CLIProxyAPI)
+that adds a `Keeper` resource entry to
+[CPAMC](https://github.com/router-for-me/Cli-Proxy-API-Management-Center) and
+opens [CPA Usage Keeper](https://github.com/Willxup/cpa-usage-keeper) inside
+the management-center plugin iframe.
 
 This plugin requires `cpa-usage-keeper` v1.12.2 or later.
 
 The plugin does not proxy Keeper APIs and does not create Keeper sessions. It
 only registers a browser resource route and embeds the configured Keeper
 application URL with `embed=cpamc`.
+
+## Related Projects
+
+- [CPA Usage Keeper](https://github.com/Willxup/cpa-usage-keeper): the Keeper
+  application embedded by this plugin.
+- [CLIProxyAPI](https://github.com/router-for-me/CLIProxyAPI): the CPA runtime
+  and plugin host.
+- [Cli-Proxy-API-Management-Center](https://github.com/router-for-me/Cli-Proxy-API-Management-Center):
+  the management center that renders plugin resources.
 
 ## Configuration
 
