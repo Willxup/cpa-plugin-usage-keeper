@@ -21,6 +21,7 @@ const (
 	pluginMenu           = "Keeper"
 	pluginAuthor         = "Willxup"
 	pluginRepository     = "https://github.com/Willxup/cpa-plugin-usage-keeper"
+	pluginLogo           = "https://raw.githubusercontent.com/Willxup/cpa-plugin-usage-keeper/main/logo.svg"
 	resourcePath         = "/open"
 	configKeeperURL      = "keeper_url"
 	shellPageTitle       = "CPA Usage Keeper"
@@ -113,6 +114,7 @@ func pluginMetadata() pluginapi.Metadata {
 		Version:          pluginVersion,
 		Author:           pluginAuthor,
 		GitHubRepository: pluginRepository,
+		Logo:             pluginLogo,
 		ConfigFields: []pluginapi.ConfigField{{
 			Name:        configKeeperURL,
 			Type:        pluginapi.ConfigFieldTypeString,

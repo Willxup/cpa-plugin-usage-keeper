@@ -85,6 +85,7 @@ func TestRegisterResultDeclaresManagementAPIAndKeeperURLField(t *testing.T) {
 		Metadata struct {
 			Name         string `json:"Name"`
 			Version      string `json:"Version"`
+			Logo         string `json:"Logo"`
 			ConfigFields []struct {
 				Name        string `json:"Name"`
 				Type        string `json:"Type"`
@@ -103,6 +104,10 @@ func TestRegisterResultDeclaresManagementAPIAndKeeperURLField(t *testing.T) {
 	}
 	if result.Metadata.Version != "9.8.7-test" {
 		t.Fatalf("metadata version = %q, want runtime pluginVersion", result.Metadata.Version)
+	}
+	const wantLogo = "https://raw.githubusercontent.com/Willxup/cpa-plugin-usage-keeper/main/logo.svg"
+	if result.Metadata.Logo != wantLogo {
+		t.Fatalf("metadata logo = %q, want %q", result.Metadata.Logo, wantLogo)
 	}
 	if !result.Capabilities.ManagementAPI {
 		t.Fatal("management_api capability is false")
