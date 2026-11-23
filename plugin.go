@@ -249,7 +249,7 @@ func keeperShellHTML(embedURL string) string {
 		"  <title>" + shellPageTitle + "</title>\n" +
 		"  <style>html,body{margin:0;width:100%;height:100%;font:14px system-ui,-apple-system,BlinkMacSystemFont,\"Segoe UI\",sans-serif;background:#f8fafc;color:#111827}.shell{position:fixed;inset:0;overflow:hidden}.keeper-frame{display:block;width:100%;height:100%;border:0;background:#fff}.status,.fallback{position:absolute;inset:0;display:grid;place-items:center;background:#f8fafc}.status-panel,.fallback-panel{max-width:560px;padding:28px;line-height:1.6;text-align:center}.fallback{display:none}.fallback h1{margin:0 0 12px;font-size:22px}.code{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;background:#e5e7eb;border-radius:6px;padding:2px 6px}.actions{display:flex;gap:12px;justify-content:center;margin-top:18px}.actions button{border:1px solid #cbd5e1;border-radius:8px;background:#fff;color:#111827;cursor:pointer;padding:8px 14px}.actions button.primary{border-color:#2563eb;background:#2563eb;color:#fff}html[data-ready=\"true\"] .status{display:none}html[data-failed=\"true\"] .status{display:none}html[data-failed=\"true\"] .fallback{display:grid}</style>\n" +
 		"</head>\n" +
-		"<body><main class=\"shell\"><iframe id=\"keeperFrame\" class=\"keeper-frame\" title=\"CPA Usage Keeper\" src=\"" + escapedURL + "\"></iframe><section id=\"keeperStatus\" class=\"status\" aria-live=\"polite\"><div class=\"status-panel\">Connecting to CPA Usage Keeper...</div></section><section id=\"keeperFallback\" class=\"fallback\" aria-live=\"assertive\"><div class=\"fallback-panel\"><h1>CPA Usage Keeper is not available</h1><p>Please check the CPA plugin configuration. Set <span class=\"code\">keeper_url</span> to the Keeper application root URL, and make sure Keeper is running and reachable from this browser.</p><p>This plugin requires cpa-usage-keeper " + minimumKeeperVersion + " or later. If Keeper is served under a base path, include that base path in the configured URL.</p><div class=\"actions\"><button id=\"retryKeeper\" class=\"primary\" type=\"button\">Retry</button><button id=\"openKeeper\" type=\"button\">Open Keeper</button></div></div></section></main><script>(function(){const keeperURL = " + string(jsURL) + ";const readyType=\"cpa-usage-keeper:ready\";const frame=document.getElementById(\"keeperFrame\");const retryButton=document.getElementById(\"retryKeeper\");const openButton=document.getElementById(\"openKeeper\");let timer=0;const expectedOrigin=(function(){try{return new URL(keeperURL).origin;}catch{return \"\";}})();function markConnecting(){document.documentElement.removeAttribute(\"data-ready\");document.documentElement.removeAttribute(\"data-failed\");}function markReady(){window.clearTimeout(timer);document.documentElement.removeAttribute(\"data-failed\");document.documentElement.setAttribute(\"data-ready\",\"true\");}function markFailed(){document.documentElement.removeAttribute(\"data-ready\");document.documentElement.setAttribute(\"data-failed\",\"true\");}function startTimer(){window.clearTimeout(timer);timer=window.setTimeout(markFailed,8000);}window.addEventListener(\"message\",function(event){if(!frame||event.source!==frame.contentWindow)return;if(expectedOrigin&&event.origin!==expectedOrigin)return;const data=event.data||{};if(data.type===readyType)markReady();});retryButton.addEventListener(\"click\",function(){markConnecting();frame.src=keeperURL;startTimer();});openButton.addEventListener(\"click\",function(){window.open(keeperURL,\"_blank\",\"noopener\");});startTimer();})();</script></body>\n" +
+		"<body><main class=\"shell\"><iframe id=\"keeperFrame\" class=\"keeper-frame\" title=\"CPA Usage Keeper\" src=\"" + escapedURL + "\"></iframe><section id=\"keeperStatus\" class=\"status\" aria-live=\"polite\"><div class=\"status-panel\" data-ru=\"Подключение к CPA Usage Keeper…\">Connecting to CPA Usage Keeper...</div></section><section id=\"keeperFallback\" class=\"fallback\" aria-live=\"assertive\"><div class=\"fallback-panel\"><h1 data-ru=\"CPA Usage Keeper недоступен\">CPA Usage Keeper is not available</h1><p><span data-ru=\"Проверьте настройки плагина CPA. Укажите в \">Please check the CPA plugin configuration. Set </span><span class=\"code\">keeper_url</span><span data-ru=\" корневой URL приложения Keeper. Убедитесь, что Keeper запущен и доступен из этого браузера.\"> to the Keeper application root URL, and make sure Keeper is running and reachable from this browser.</span></p><p><span data-ru=\"Для плагина требуется cpa-usage-keeper версии \">This plugin requires cpa-usage-keeper </span>" + minimumKeeperVersion + "<span data-ru=\" или новее. Если Keeper доступен по вложенному пути, включите этот путь в URL.\"> or later. If Keeper is served under a base path, include that base path in the configured URL.</span></p><div class=\"actions\"><button id=\"retryKeeper\" class=\"primary\" type=\"button\" data-ru=\"Повторить\">Retry</button><button id=\"openKeeper\" type=\"button\" data-ru=\"Открыть Keeper\">Open Keeper</button></div></div></section></main><script>(function(){const keeperURL = " + string(jsURL) + ";const readyType=\"cpa-usage-keeper:ready\";const frame=document.getElementById(\"keeperFrame\");const retryButton=document.getElementById(\"retryKeeper\");const openButton=document.getElementById(\"openKeeper\");let timer=0;const expectedOrigin=(function(){try{return new URL(keeperURL).origin;}catch{return \"\";}})();function markConnecting(){document.documentElement.removeAttribute(\"data-ready\");document.documentElement.removeAttribute(\"data-failed\");}function markReady(){window.clearTimeout(timer);document.documentElement.removeAttribute(\"data-failed\");document.documentElement.setAttribute(\"data-ready\",\"true\");}function markFailed(){document.documentElement.removeAttribute(\"data-ready\");document.documentElement.setAttribute(\"data-failed\",\"true\");}function startTimer(){window.clearTimeout(timer);timer=window.setTimeout(markFailed,8000);}window.addEventListener(\"message\",function(event){if(!frame||event.source!==frame.contentWindow)return;if(expectedOrigin&&event.origin!==expectedOrigin)return;const data=event.data||{};if(data.type===readyType)markReady();});retryButton.addEventListener(\"click\",function(){markConnecting();frame.src=keeperURL;startTimer();});openButton.addEventListener(\"click\",function(){window.open(keeperURL,\"_blank\",\"noopener\");});startTimer();})();</script>" + keeperLocaleScript + "</body>\n" +
 		"</html>\n"
 }
 
@@ -265,9 +265,46 @@ func configFallbackHTML(message string) string {
 		"  <title>CPA Usage Keeper</title>\n" +
 		"  <style>body{margin:0;font:14px system-ui,-apple-system,BlinkMacSystemFont,\"Segoe UI\",sans-serif;background:#f8fafc;color:#111827;display:grid;min-height:100vh;place-items:center}.panel{max-width:560px;padding:24px;line-height:1.6}.label{font-weight:700}.code{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;background:#e5e7eb;border-radius:6px;padding:2px 6px}</style>\n" +
 		"</head>\n" +
-		"<body><main class=\"panel\"><h1>CPA Usage Keeper</h1><p class=\"label\">Plugin configuration is incomplete.</p><p>" + html.EscapeString(message) + "</p><p>Set <span class=\"code\">keeper_url</span> to the full Keeper application root URL.</p><p>This plugin requires cpa-usage-keeper " + minimumKeeperVersion + " or later.</p></main></body>\n" +
+		"<body><main class=\"panel\"><h1>CPA Usage Keeper</h1><p class=\"label\" data-ru=\"Настройка плагина не завершена.\">Plugin configuration is incomplete.</p><p id=\"keeperConfigError\">" + html.EscapeString(message) + "</p><p><span data-ru=\"Укажите в \">Set </span><span class=\"code\">keeper_url</span><span data-ru=\" полный корневой URL приложения Keeper.\"> to the full Keeper application root URL.</span></p><p><span data-ru=\"Для плагина требуется cpa-usage-keeper версии \">This plugin requires cpa-usage-keeper </span>" + minimumKeeperVersion + "<span data-ru=\" или новее.\"> or later.</span></p></main>" + keeperLocaleScript + "</body>\n" +
 		"</html>\n"
 }
+
+const keeperLocaleScript = `<script>
+(() => {
+  let parentRoot;
+  if (window.parent !== window) {
+    try { parentRoot = window.parent.document.documentElement; } catch {}
+  }
+  const messages = new Map([...document.querySelectorAll('[data-ru]')].map(node => [node, node.textContent]));
+  const error = document.getElementById('keeperConfigError');
+  const originalError = error?.textContent;
+  const errors = {
+    'keeper_url is required': 'Укажите keeper_url',
+    'keeper_url is not configured': 'Параметр keeper_url не настроен',
+    'invalid plugin lifecycle request': 'Некорректный запрос инициализации плагина',
+    'invalid plugin YAML config': 'Некорректная конфигурация YAML',
+    'keeper_url must start with http:// or https://': 'URL в keeper_url должен начинаться с http:// или https://',
+    'keeper_url host is required': 'Укажите имя хоста в keeper_url',
+    'keeper_url must not include query parameters': 'Удалите параметры запроса из keeper_url',
+    'keeper_url must not include a fragment': 'Удалите фрагмент из keeper_url',
+  };
+  function updateLanguage() {
+    const language = (parentRoot?.lang || navigator.language).toLowerCase();
+    const russian = language === 'ru' || language.startsWith('ru-');
+    document.documentElement.lang = russian ? 'ru' : 'en';
+    for (const [node, english] of messages) node.textContent = russian ? node.dataset.ru : english;
+    if (error) {
+      const invalid = 'keeper_url is invalid: ';
+      const translated = originalError.startsWith(invalid)
+        ? 'Некорректный keeper_url: ' + originalError.slice(invalid.length)
+        : errors[originalError] || originalError;
+      error.textContent = russian ? translated : originalError;
+    }
+  }
+  if (parentRoot) new MutationObserver(updateLanguage).observe(parentRoot, { attributes: true, attributeFilter: ['lang'] });
+  updateLanguage();
+})();
+</script>`
 
 func okEnvelope(v any) ([]byte, error) {
 	result, err := json.Marshal(v)
